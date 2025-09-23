@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+  <description>SQS to S3 Transfer Flow</description>
+  <name>SQS_to_S3_Flow</name>
+  <snippet>
+    <controllerServices>
+      <controllerService>
+        <id>aws-credentials-service</id>
+        <name>AWS_Credentials_Service</name>
+        <type>org.apache.nifi.processors.aws.credentials.provider.service.StandardAWSCredentialsProviderControllerService</type>
+        <properties>
+          <property name="Access Key ID">YOUR_ACCESS_KEY</property>
+          <property name="Secret Access Key">YOUR_SECRET_KEY</property>
+          <property name="Credentials File"></property>
+          <property name="Profile Name"></property>
+          <property name="Anonymous Authentication">false</property>
+        </properties>
+      </controllerService>
+    </controllerServices>
+
+    <processors>
+      <processor>
+        <id>consume-sqs</id>
+        <name>ConsumeSQSMessages</name>
+        <class>org.apache.nifi.processors.aws.sqs.ConsumeSQSMessages</class>
+        <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+        <schedulingPeriod>5 sec</schedulingPeriod>
+        <config>
+          <properties>
+            <property name="aws-credentials-provider-service">aws-credentials-service</property>
+            <property name="queue-url">https://sqs.us-east-1.amazonaws.com/123456789012/source-queue</property>
+            <property name="region">us-east-1</property>
+          </properties>
+        </config>
+      </processor>
+
+      <processor>
+        <id>eval-json</id>
+        <name>EvaluateJsonPath</name>
+        <class>org.apache.nifi.processors.standard.EvaluateJsonPath</class>
+        <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+        <schedulingPeriod>0 sec</schedulingPeriod>
+        <config>
+          <properties>
+            <property name="Destination">flowfile-attribute</property>
+            <property name="jsonpath.bucket">$.Records[0].s3.bucket.name</property>
+            <property name="jsonpath.key">$.Records[0].s3.object.key</property>
+          </properties>
+        </config>
+      </processor>
+
+      <processor>
+        <id>fetch-s3</id>
+        <name>FetchS3Object</name>
+        <class>org.apache.nifi.processors.aws.s3.FetchS3Object</class>
+        <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+        <schedulingPeriod>0 sec</schedulingPeriod>
+        <config>
+          <properties>
+            <property name="aws-credentials-provider-service">aws-credentials-service</property>
+            <property name="Bucket">${bucket}</property>
+            <property name="Object Key">${key}</property>
+            <property name="Region">us-east-1</property>
+          </properties>
+        </config>
+      </processor>
+
+      <processor>
+        <id>put-s3</id>
+        <name>PutS3Object</name>
+        <class>org.apache.nifi.processors.aws.s3.PutS3Object</class>
+        <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
+        <schedulingPeriod>0 sec</schedulingPeriod>
+        <config>
+          <properties>
+            <property name="aws-credentials-provider-service">aws-credentials-service</property>
+            <property name="Bucket">target-bucket-name</property>
+            <property name="Object Key">${key}</property>
+            <property name="Region">us-east-1</property>
+          </properties>
+        </config>
+      </processor>
+    </processors>
+
+    <connections>
+      <connection>
+        <id>c1</id>
+        <sourceId>consume-sqs</sourceId>
+        <sourceRelationshipNames>
+          <relationship>success</relationship>
+        </sourceRelationshipNames>
+        <destinationId>eval-json</destinationId>
+      </connection>
+      <connection>
+        <id>c2</id>
+        <sourceId>eval-json</sourceId>
+        <sourceRelationshipNames>
+          <relationship>matched</relationship>
+        </sourceRelationshipNames>
+        <destinationId>fetch-s3</destinationId>
+      </connection>
+      <connection>
+        <id>c3</id>
+        <sourceId>fetch-s3</sourceId>
+        <sourceRelationshipNames>
+          <relationship>success</relationship>
+        </sourceRelationshipNames>
+        <destinationId>put-s3</destinationId>
+      </connection>
+    </connections>
+  </snippet>
+</template>

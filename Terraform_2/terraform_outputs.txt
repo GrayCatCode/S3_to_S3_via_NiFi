@@ -1,0 +1,5 @@
+nifi_user_access_key_id = "AKIA2SKZFTFSKUX7Y4TF"
+nifi_user_secret_access_key = <sensitive>
+source_bucket_name = "amp-nifi-src-bckt"
+sqs_queue_url = "https://sqs.us-east-1.amazonaws.com/726573357412/s3-notify-queue"
+target_bucket_name = "amp-nifi-dest-bckt"
