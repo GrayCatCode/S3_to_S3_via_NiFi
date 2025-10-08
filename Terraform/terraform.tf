@@ -72,7 +72,7 @@ resource "aws_s3_bucket_notification" "source_to_sqs" {
   queue {
     queue_arn = aws_sqs_queue.notify_queue.arn
     events    = ["s3:ObjectCreated:*"]
-    filter_suffix = ".tar"
+    filter_suffix = ".txt"
   }
 
   depends_on = [aws_sqs_queue_policy.queue_policy]

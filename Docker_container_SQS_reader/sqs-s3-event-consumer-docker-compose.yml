@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  sqs-s3-consumer:
+    build: .
+    container_name: sqs-s3-consumer
+    restart: always
+    environment:
+      # Inject all variables here
+      SQS_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/123456789012/my-s3-events-queue"
+      MAX_MESSAGES: 10
+      WAIT_TIME_SECONDS: 10
+      VISIBILITY_TIMEOUT_SECONDS: 30
+      DOWNLOAD_DIR: "/data/downloads"
+      AWS_DEFAULT_REGION: "us-east-1"
+    volumes:
+      - ./downloads:/data/downloads
+      - ~/.aws:/root/.aws:ro   # use local AWS credentials
