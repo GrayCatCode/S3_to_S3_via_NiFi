@@ -1,0 +1,17 @@
+# Docker compose project for the SQS queue poller container
+
+services:
+  sqs-s3-poller:
+    build:
+      dockerfile: sqs-s3-poller.dockerfile
+      context: .
+    container_name: sqs-s3-poller
+    restart: always
+    environment:
+      QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/726573357412/s3-notify-queue"
+      AWS_REGION: "us-east-1"
+      DEST_DIR: "/data"
+      POLL_INTERVAL: 6000
+    volumes:
+      - $HOME/.aws:/root/.aws:ro
+      - /var/data/s3-files:/data

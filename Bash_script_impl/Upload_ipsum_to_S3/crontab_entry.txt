@@ -1,0 +1,2 @@
+# To run in cron (every hour):
+0 * * * * /path/to/upload_random_ipsum.sh 512 my-sample-bucket >> /var/log/upload_random_ipsum.log 2>&1

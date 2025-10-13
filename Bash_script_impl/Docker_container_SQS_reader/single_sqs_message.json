@@ -1,0 +1,8 @@
+[
+  {
+    "MessageId": "2de481f5-f663-4ef2-ad0b-23ad346a793d",
+    "ReceiptHandle": "AQEBz3WhaBk0l6xtafzXRp/e9I2jRiugQ99zbBU0kyeSzITtZs0xQwn0+dJz/J5Wu0S4U5CYJnRh4DJJqK0beRXekbc9/q93KMnXcR+EayN0UB2r5QIqKZW+DG4i3U0H7CoIXPG0NmpDzgHKIXab/POuoa4UOLE4/707sRCDLFR6tFKrOPBi5np7pTsa2d1LqekD7riAj/4J0xx5Ef4P6LQqGLGR5wJefbCcxFJXaTbancDhHxIyPgDnAKS6CXj4MRXCGhDxdIM0lYUemrwRknuBkZ/kUjWQhRIMMyEQbkklMlf/VktVXoZ/3tjbsZJvg8tNDSEHvOYMD+5uxDBPtYj9vKWO0Tyzd1JW3wgRKtHaKzlNiqUo/XNhFZOwhUlb4BJ+hXyC5gq9z0g+OnA1e4Suqg==",
+    "MD5OfBody": "4c622f82ee86d719043fd19bc3d62740",
+    "Body": "{\"Service\":\"Amazon S3\",\"Event\":\"s3:TestEvent\",\"Time\":\"2025-10-07T22:25:50.071Z\",\"Bucket\":\"amp-s3-up-bckt\",\"RequestId\":\"80V3CPDZD160Z1GP\",\"HostId\":\"6+/zoc85I7WJ7TRnz+JocflT8/WC1BUa8cavZI6Og/wsfRpMSVsml2KQjcHflqvqb1TF/NyTBjY=\"}"
+  }
+]
