@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  sqs-s3-consumer:
+    build: .
+    container_name: sqs-s3-consumer
+    restart: always
+
+    environment:
+      SQS_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/123456789012/my-s3-events-queue"
+      AWS_DEFAULT_REGION: "us-east-1"
+      MAX_MESSAGES: 10
+      WAIT_TIME_SECONDS: 10
+      VISIBILITY_TIMEOUT_SECONDS: 30
+      DOWNLOAD_DIR: "/data/downloads"
+      MAX_RETRIES: 5
+      BASE_BACKOFF_SECONDS: 2
+      LOG_LEVEL: "INFO"
+
+    volumes:
+      - ./downloads:/data/downloads
+      - ~/.aws:/root/.aws:ro
+
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/sqs_consumer_healthy && [ $(( $(date +%s) - $(cat /tmp/sqs_consumer_healthy 2>/dev/null || echo 0) )) -lt 120 ]"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
